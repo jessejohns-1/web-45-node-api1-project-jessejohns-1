@@ -80,16 +80,36 @@ server.delete('/api/users/:id', (req,res) => {
 
 //updating user
 
-server.put("/api/users/:id", async (res,req) =>{
-    const {id} = req.params
-    const changes = req.body
-    try{
-         const result = await Mod.update(id,changes)
-         res.status(200).json(result)
-    }catch(err) {
-        res.status(500).json({ message: "The user information could not be modified"})
+server.put("/api/users/:id", async (req, res) => {
+  try {
+      const modUser = await Mod.findById(req.params.id)
+      if (!modUser) {
+          res.status(404).json({
+              message: 'The user with the specified ID does not exist'
+          })
+      } else if 
+           (!req.body.name || !req.body.bio) {
+              res.status(400).json({
+                  message: 'Please provide name and bio for the user'
+              })
+          } else {
+              const info = await Mod.update(
+                  req.params.id, 
+                  req.body,
+                  )
+              res.status(200).json(info)
+          }
+        
     }
-})
+     catch (err) {
+        res.status(500).json({
+            message:'error updating user',
+            err: err.message,
+            stack: err.stack
+        })
+        }
+    })
+
 
 
 
