@@ -81,21 +81,23 @@ server.delete('/api/users/:id', (req,res) => {
 //updating user
 
 server.put("/api/users/:id", async (req, res) => {
+    const { id } = req.params
+    const changes = req.body
   try {
-      const modUser = await Mod.findById(req.params.id)
+      const modUser = await Mod.findById(id)
       if (!modUser) {
           res.status(404).json({
               message: 'The user with the specified ID does not exist'
           })
       } else if 
-           (!req.body.name || !req.body.bio) {
+           (!changes.name || !changes.bio) {
               res.status(400).json({
                   message: 'Please provide name and bio for the user'
               })
           } else {
               const info = await Mod.update(
-                  req.params.id, 
-                  req.body,
+                  id, 
+                 changes,
                   )
               res.status(200).json(info)
           }
