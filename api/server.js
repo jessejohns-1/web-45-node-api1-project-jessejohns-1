@@ -34,7 +34,7 @@ server.get('/api/users', (req,res) => {
        if (mod) { res.status(200).json(mod)
     }else{
         console.log("Thiis is the else")
-        res.status(404).json({ message: "Not Found"})
+        res.status(404).json({ message: "The user with the specified ID does not exist"})
     }
     })
     .catch(err=>{
@@ -67,7 +67,7 @@ server.delete('/api/users/:id', (req,res) => {
             res.status(200).json(mod)
         }else{
             res.status(404).json({
-                message: `mod ${res.params.id} not real!!`
+                message: `message: "The user with the specified ID does not exist"`
             })
         }
     })
@@ -76,6 +76,21 @@ server.delete('/api/users/:id', (req,res) => {
       res.status(500).json({ message: err.message })
     })
 })
+
+
+//updating user
+
+server.put("/api/users/:id", async (res,req) =>{
+    const {id} = req.params
+    const changes = req.body
+    try{
+         const result = await Mod.update(id,changes)
+         res.status(200).json(result)
+    }catch(err) {
+        res.status(500).json({ message: "The user information could not be modified"})
+    }
+})
+
 
 
 module.exports = server; // EXPORT YOUR SERVER instead of {}
